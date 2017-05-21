@@ -48,7 +48,8 @@ In `runtime.env`:
 
  * `UPLOAD_ACL`: finalised images will be uploaded with this permission level. Should be one of `private` `public-read` `public-read-write` `aws-exec-read` `authenticated-read` `bucket-owner-read` `bucket-owner-full-control`. Default is `public-read`.
  * `MAX_FILE_SIZE`: files over this size in bytes will be skipped (e.g. big PNGs will probably just hit the timeout anyway). Set to `-1` for no limit
- * `PNG_OPTIM_LEVEL`: Optimization level to use for PNGs, between 0 and 7. Lower level means faster optimization, higher means better results.
+ * `PNG_OPTIM_LEVEL`: Optimization level to use for PNGs, between 0 and 7. Lower level means faster optimization, higher means better results. 
+ * `CACHE_CONTROL`: Leverage browser caching by setting the cache control. Default is: `public, max-age=31536000`.
 
 
 [l]: https://aws.amazon.com/lambda/

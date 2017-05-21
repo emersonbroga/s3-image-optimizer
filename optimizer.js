@@ -16,6 +16,8 @@ var SOURCE_BUCKET = process.env.SOURCE_BUCKET;
 var UPLOAD_BUCKET = process.env.UPLOAD_BUCKET;
 var UPLOAD_ACL = process.env.UPLOAD_ACL || 'public-read';
 var SKIP_FILE_SIZE = +process.env.MAX_FILE_SIZE || -1;
+var CACHE_CONTROL = process.env.CACHE_CONTROL || 'public, max-age=31536000';
+
 
 // Imagemin options object for all image types
 var imageminOptions = {
@@ -102,6 +104,7 @@ function processOne(key, callback) {
         Key: key,
         Body: file.contents,
         ContentType: obj.ContentType,
+        CacheControl: CACHE_CONTROL,
         Metadata: meta.Metadata
       }, function(err) {
         if(err) return next(err);
@@ -114,7 +117,6 @@ function processOne(key, callback) {
   ], function(err) {
     if (err === 'skip') {
       fs.appendFileSync(skippedLog, key + '\n'); // add to skipped files log
-      updateMarkerFile(key);
       err = null;
     }
     callback(err);
@@ -182,12 +184,8 @@ function processNext() {
 }
 
 function onImageOptimized(key) {
-  updateMarkerFile(key);
-  fs.appendFileSync(processedLog, key + '\n'); // add to processed files log
-}
-
-function updateMarkerFile(key) {
   fs.writeFileSync(markerFile, key); // update the current market
+  fs.appendFileSync(processedLog, key + '\n'); // add to processed files log
 }
 
 function onComplete() {
